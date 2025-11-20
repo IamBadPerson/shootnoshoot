@@ -14,7 +14,7 @@ function App() {
 
   // Load scenarios on mount
   useEffect(() => {
-    fetch('/shootnoshoot/scenarios.json')
+    fetch('./scenarios.json')
       .then(res => res.json())
       .then(data => {
         setScenarios(data.scenarios)
