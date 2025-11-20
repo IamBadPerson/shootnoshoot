@@ -2,37 +2,37 @@
   "scenarios": [
     {
       "id": 1,
-      "image": "/images/target1.jpg",
+      "image": "/ShootNoShoot/images/target1.jpg",
       "shouldShoot": true,
       "description": "Infantry with shield raised, legs exposed - SAFE SHOT (legs only)"
     },
     {
       "id": 2,
-      "image": "/images/target2.jpg",
+      "image": "/ShootNoShoot/images/target2.jpg",
       "shouldShoot": false,
       "description": "Target at head/neck level - DO NOT SHOOT (above arm zone)"
     },
     {
       "id": 5,
-      "image": "/images/target5.jpg",
+      "image": "/ShootNoShoot/images/target5.jpg",
       "shouldShoot": true,
       "description": "Kneeling infantry with shield, legs visible - SAFE SHOT (lob over shield)"
     },
     {
       "id": 6,
-      "image": "/images/target6.jpg",
+      "image": "/ShootNoShoot/images/target6.jpg",
       "shouldShoot": false,
       "description": "Archers back called, target down - DO NOT SHOOT (phase ended)"
     },
     {
       "id": 9,
-      "image": "/images/target9.jpg",
+      "image": "/ShootNoShoot/images/target9.jpg",
       "shouldShoot": true,
       "description": "Enemy below shield line at safe distance - SAFE SHOT"
     },
     {
       "id": 10,
-      "image": "/images/target10.jpg",
+      "image": "/ShootNoShoot/images/target10.jpg",
       "shouldShoot": false,
       "description": "Target area not cleared, no 'archers forward' - DO NOT SHOOT"
     }
