@@ -1,18 +1,28 @@
 # Copilot Instructions — ShootNoShoot
 
-A React + Vite single-page application deployed to GitHub Pages.
+A React + Vite medieval reenactment training application with three interactive game modes and leaderboard tracking, deployed to GitHub Pages.
 
 ## Project Overview
 
-This is a Vite-powered React app configured for automatic deployment to GitHub Pages. The build uses Vite's fast HMR for development and outputs optimized production bundles to the `dist/` folder.
+This is a Vite-powered React app configured for automatic deployment to GitHub Pages. The application provides training tools for historical reenactment archery safety, distance estimation, and authentic military commands. Features password protection, nickname-based user tracking, and localStorage-based leaderboards.
 
 ## Key Files & Architecture
 
+**Core Configuration:**
 - **`package.json`** — Defines `dev`, `build`, `preview`, and `deploy` scripts. Always use these scripts rather than calling tools directly.
-- **`vite.config.js`** — Sets `base: '/ShootNoShoot/'` for GitHub Pages routing. If the repo name changes, update this field.
+- **`vite.config.js`** — Sets `base: './'` for relative paths on GitHub Pages. Uses relative paths instead of absolute for better compatibility.
 - **`src/main.jsx`** — React app entry point; renders `<App />` into `#root`.
-- **`src/App.jsx`** — Main application component.
 - **`.github/workflows/deploy.yml`** — GitHub Actions workflow that builds and deploys on every push to `main`.
+
+**Application Components:**
+- **`src/App.jsx`** — Main application router with password authentication ("Banner"), nickname management, and Shoot/No-Shoot game logic.
+- **`src/DistanceGame.jsx`** — Distance estimation training game (5'9" person at 5-30m ranges).
+- **`src/Flashcards.jsx`** — Authentic Orders flashcard system (23 commands in Norman French/Early English with 5 modes).
+- **`src/Leaderboard.jsx`** — Displays top 10 scores for all three games with player nicknames.
+
+**Data & Assets:**
+- **`public/scenarios.json`** — 6 shoot/no-shoot scenarios with archery safety context.
+- **`public/.nojekyll`** — Disables Jekyll processing on GitHub Pages.
 
 ## Developer Workflows
 
