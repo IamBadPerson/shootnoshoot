@@ -36,7 +36,7 @@ This project uses GitHub Actions for automatic deployment. Every push to the `ma
 3. Under **Source**, select **GitHub Actions**
 4. Push to the `main` branch to trigger deployment
 
-The site will be available at: `https://<your-username>.github.io/ShootNoShoot/`
+The site will be available at: `https://iambadperson.github.io/shootnoshoot/`
 
 ### Manual Deployment
 
@@ -61,4 +61,4 @@ This will build the app and push the `dist` folder to the `gh-pages` branch.
 
 ## Key Configuration
 
-The `base` property in `vite.config.js` is set to `/ShootNoShoot/` to match the GitHub Pages URL structure. Update this if you rename the repository.
+The `base` property in `vite.config.js` is set to `/shootnoshoot/` to match the GitHub Pages URL structure. Update this if you rename the repository.
