@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import './App.css'
 import DistanceGame from './DistanceGame'
+import Flashcards from './Flashcards'
 
 function App() {
   const [scenarios, setScenarios] = useState([])
@@ -12,7 +13,7 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [password, setPassword] = useState('')
   const [authError, setAuthError] = useState(false)
-  const [currentGame, setCurrentGame] = useState('menu') // 'menu', 'shoot', 'distance'
+  const [currentGame, setCurrentGame] = useState('menu') // 'menu', 'shoot', 'distance', 'flashcards'
 
   // Load scenarios on mount
   useEffect(() => {
@@ -113,6 +114,10 @@ function App() {
     return <DistanceGame onBack={() => setCurrentGame('menu')} />
   }
 
+  if (currentGame === 'flashcards') {
+    return <Flashcards onBack={() => setCurrentGame('menu')} />
+  }
+
   if (currentGame === 'menu') {
     return (
       <div className="app">
@@ -130,6 +135,12 @@ function App() {
               onClick={() => setCurrentGame('distance')}
             >
               Distance Estimation
+            </button>
+            <button 
+              className="btn menu-btn"
+              onClick={() => setCurrentGame('flashcards')}
+            >
+              Authentic Orders Flashcards
             </button>
           </div>
         </div>
