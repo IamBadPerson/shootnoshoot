@@ -8,6 +8,9 @@ function App() {
   const [feedback, setFeedback] = useState(null)
   const [showResult, setShowResult] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [password, setPassword] = useState('')
+  const [authError, setAuthError] = useState(false)
 
   // Load scenarios on mount
   useEffect(() => {
@@ -64,6 +67,40 @@ function App() {
   const resetScore = () => {
     setScore({ correct: 0, total: 0 })
     loadRandomScenario()
+  }
+
+  const handleLogin = (e) => {
+    e.preventDefault()
+    if (password === 'Banner') {
+      setIsAuthenticated(true)
+      setAuthError(false)
+    } else {
+      setAuthError(true)
+    }
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <div className="app">
+        <div className="login-container">
+          <h1>Ragged</h1>
+          <form onSubmit={handleLogin} className="login-form">
+            <input
+              type="password"
+              placeholder="Enter password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="password-input"
+              autoFocus
+            />
+            <button type="submit" className="btn btn-login">
+              Enter
+            </button>
+            {authError && <p className="auth-error">Incorrect password</p>}
+          </form>
+        </div>
+      </div>
+    )
   }
 
   if (loading) {
