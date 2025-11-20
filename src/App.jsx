@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import './App.css'
 import DistanceGame from './DistanceGame'
 import Flashcards from './Flashcards'
+import Leaderboard from './Leaderboard'
 
 function App() {
   const [scenarios, setScenarios] = useState([])
@@ -13,7 +14,20 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [password, setPassword] = useState('')
   const [authError, setAuthError] = useState(false)
-  const [currentGame, setCurrentGame] = useState('menu') // 'menu', 'shoot', 'distance', 'flashcards'
+  const [nickname, setNickname] = useState(localStorage.getItem('userNickname') || '')
+  const [nicknameInput, setNicknameInput] = useState('')
+  const [currentGame, setCurrentGame] = useState('menu') // 'menu', 'shoot', 'distance', 'flashcards', 'leaderboard'
+
+  // Save score on tab close
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      if (score.total > 0 && currentGame === 'shoot') {
+        saveScore('shoot', score)
+      }
+    }
+    window.addEventListener('beforeunload', handleBeforeUnload)
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload)
+  }, [score, currentGame])
 
   // Load scenarios on mount
   useEffect(() => {
@@ -43,14 +57,28 @@ function App() {
     setShowResult(false)
   }
 
+  const saveScore = (gameType, scoreData) => {
+    const leaderboard = JSON.parse(localStorage.getItem(`leaderboard_${gameType}`) || '[]')
+    const newScore = {
+      ...scoreData,
+      nickname: nickname,
+      percentage: Math.round((scoreData.correct / scoreData.total) * 100),
+      date: new Date().toISOString()
+    }
+    leaderboard.push(newScore)
+    leaderboard.sort((a, b) => b.percentage - a.percentage || b.correct - a.correct)
+    localStorage.setItem(`leaderboard_${gameType}`, JSON.stringify(leaderboard))
+  }
+
   const handleDecision = (userShoot) => {
     if (!currentScenario || showResult) return
 
     const correct = userShoot === currentScenario.shouldShoot
-    setScore(prev => ({
-      correct: prev.correct + (correct ? 1 : 0),
-      total: prev.total + 1
-    }))
+    const newScore = {
+      correct: score.correct + (correct ? 1 : 0),
+      total: score.total + 1
+    }
+    setScore(newScore)
 
     setFeedback({
       correct,
@@ -72,6 +100,14 @@ function App() {
     loadRandomScenario()
   }
 
+  const handleBackToMenu = () => {
+    if (score.total > 0) {
+      saveScore('shoot', score)
+      setScore({ correct: 0, total: 0 })
+    }
+    setCurrentGame('menu')
+  }
+
   const handleLogin = (e) => {
     e.preventDefault()
     if (password === 'Banner') {
@@ -80,6 +116,21 @@ function App() {
     } else {
       setAuthError(true)
     }
+  }
+
+  const handleSetNickname = (e) => {
+    e.preventDefault()
+    if (nicknameInput.trim()) {
+      const savedNickname = nicknameInput.trim()
+      setNickname(savedNickname)
+      localStorage.setItem('userNickname', savedNickname)
+    }
+  }
+
+  const handleChangeNickname = () => {
+    setNickname('')
+    setNicknameInput('')
+    localStorage.removeItem('userNickname')
   }
 
   if (!isAuthenticated) {
@@ -110,12 +161,45 @@ function App() {
     return <div className="app"><h1>Loading scenarios...</h1></div>
   }
 
+  // Nickname screen
+  if (!nickname) {
+    return (
+      <div className="app">
+        <div className="login-container">
+          <h1>Welcome, Archer!</h1>
+          <p style={{ color: '#ccc', marginBottom: '1.5rem' }}>
+            Enter your nickname for the leaderboards
+          </p>
+          <form onSubmit={handleSetNickname} className="login-form">
+            <input
+              type="text"
+              placeholder="Your nickname"
+              value={nicknameInput}
+              onChange={(e) => setNicknameInput(e.target.value)}
+              className="password-input"
+              maxLength={20}
+              autoFocus
+              required
+            />
+            <button type="submit" className="btn btn-login">
+              Continue
+            </button>
+          </form>
+        </div>
+      </div>
+    )
+  }
+
   if (currentGame === 'distance') {
-    return <DistanceGame onBack={() => setCurrentGame('menu')} />
+    return <DistanceGame onBack={() => setCurrentGame('menu')} nickname={nickname} />
   }
 
   if (currentGame === 'flashcards') {
-    return <Flashcards onBack={() => setCurrentGame('menu')} />
+    return <Flashcards onBack={() => setCurrentGame('menu')} nickname={nickname} />
+  }
+
+  if (currentGame === 'leaderboard') {
+    return <Leaderboard onBack={() => setCurrentGame('menu')} />
   }
 
   if (currentGame === 'menu') {
@@ -123,6 +207,23 @@ function App() {
       <div className="app">
         <div className="menu-container">
           <h1>Training Menu</h1>
+          <p style={{ color: '#888', marginBottom: '1rem' }}>
+            Playing as: <strong style={{ color: '#646cff' }}>{nickname}</strong>
+            {' '}
+            <button 
+              onClick={handleChangeNickname}
+              style={{ 
+                background: 'none', 
+                border: 'none', 
+                color: '#888', 
+                textDecoration: 'underline', 
+                cursor: 'pointer',
+                fontSize: '0.9rem'
+              }}
+            >
+              (change)
+            </button>
+          </p>
           <div className="menu-buttons">
             <button 
               className="btn menu-btn"
@@ -141,6 +242,12 @@ function App() {
               onClick={() => setCurrentGame('flashcards')}
             >
               Authentic Orders Flashcards
+            </button>
+            <button 
+              className="btn menu-btn"
+              onClick={() => setCurrentGame('leaderboard')}
+            >
+              Leaderboards
             </button>
           </div>
         </div>
@@ -170,7 +277,7 @@ function App() {
             </span>
           )}
           <button className="reset-btn" onClick={resetScore}>Reset</button>
-          <button className="back-btn" onClick={() => setCurrentGame('menu')}>← Back to Menu</button>
+          <button className="back-btn" onClick={handleBackToMenu}>← Back to Menu</button>
         </div>
       </header>
 

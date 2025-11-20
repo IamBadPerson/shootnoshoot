@@ -1,7 +1,28 @@
 import { useState, useEffect } from 'react'
 import './Flashcards.css'
 
-function Flashcards({ onBack }) {
+function Flashcards({ onBack, nickname }) {
+  // Save score when user leaves the game
+  const [score, setScore] = useState({ correct: 0, total: 0 })
+  
+  useEffect(() => {
+    return () => {
+      if (score.total > 0) {
+        const leaderboard = JSON.parse(localStorage.getItem('leaderboard_flashcards') || '[]')
+        const newScore = {
+          correct: score.correct,
+          total: score.total,
+          nickname: nickname,
+          percentage: Math.round((score.correct / score.total) * 100),
+          date: new Date().toISOString()
+        }
+        leaderboard.push(newScore)
+        leaderboard.sort((a, b) => b.percentage - a.percentage || b.correct - a.correct)
+        localStorage.setItem('leaderboard_flashcards', JSON.stringify(leaderboard))
+      }
+    }
+  }, [score, nickname])
+
   const [cards] = useState([
     { modern: "Form", normanFrench: "Formez! / A Forme!", earlyEnglish: "Awicken!", meaning: "Form a basic fighting line" },
     { modern: "Present", normanFrench: "Presente les armes!", earlyEnglish: "Rearath spar!", meaning: "Present weapons and prepare to advance" },
@@ -32,7 +53,6 @@ function Flashcards({ onBack }) {
   const [showAnswer, setShowAnswer] = useState(false)
   const [questionType, setQuestionType] = useState('normanToMeaning') // normanToMeaning, earlyToMeaning, meaningToNorman, meaningToEarly, mixed
   const [currentQuestionType, setCurrentQuestionType] = useState('normanToMeaning') // For mixed mode
-  const [score, setScore] = useState({ correct: 0, total: 0 })
   const [options, setOptions] = useState([])
   const [selectedAnswer, setSelectedAnswer] = useState(null)
   const [studyMode, setStudyMode] = useState(false)

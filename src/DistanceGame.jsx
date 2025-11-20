@@ -1,12 +1,31 @@
 import { useState, useEffect } from 'react'
 import './DistanceGame.css'
 
-function DistanceGame({ onBack }) {
+function DistanceGame({ onBack, nickname }) {
   const [currentDistance, setCurrentDistance] = useState(null)
   const [userGuess, setUserGuess] = useState('')
   const [score, setScore] = useState({ correct: 0, total: 0 })
   const [feedback, setFeedback] = useState(null)
   const [showResult, setShowResult] = useState(false)
+
+  // Save score when user leaves the game
+  useEffect(() => {
+    return () => {
+      if (score.total > 0) {
+        const leaderboard = JSON.parse(localStorage.getItem('leaderboard_distance') || '[]')
+        const newScore = {
+          correct: score.correct,
+          total: score.total,
+          nickname: nickname,
+          percentage: Math.round((score.correct / score.total) * 100),
+          date: new Date().toISOString()
+        }
+        leaderboard.push(newScore)
+        leaderboard.sort((a, b) => b.percentage - a.percentage || b.correct - a.correct)
+        localStorage.setItem('leaderboard_distance', JSON.stringify(leaderboard))
+      }
+    }
+  }, [score, nickname])
 
   // Person height in pixels at different distances (5'9" = 1.75m tall person)
   // These are approximate ratios for a person at various distances
