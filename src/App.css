@@ -320,3 +320,54 @@ header h1 {
   font-size: 1rem;
   text-align: center;
 }
+
+/* Menu styles */
+.menu-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3rem;
+  padding: 2rem;
+}
+
+.menu-container h1 {
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  margin: 0;
+  color: #fff;
+}
+
+.menu-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 500px;
+}
+
+.menu-btn {
+  background-color: #646cff;
+  color: white;
+  border-color: #535bf2;
+  font-size: clamp(1.2rem, 3vw, 1.5rem);
+  padding: 1.5em 2em;
+  width: 100%;
+}
+
+.menu-btn:hover {
+  background-color: #535bf2;
+  border-color: #646cff;
+  transform: scale(1.02);
+}
+
+.back-btn {
+  padding: 0.4em 0.8em;
+  font-size: 0.9rem;
+  background-color: #333;
+  border: 1px solid #555;
+}
+
+.back-btn:hover {
+  background-color: #444;
+  border-color: #666;
+}

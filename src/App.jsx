@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import './App.css'
+import DistanceGame from './DistanceGame'
 
 function App() {
   const [scenarios, setScenarios] = useState([])
@@ -11,6 +12,7 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [password, setPassword] = useState('')
   const [authError, setAuthError] = useState(false)
+  const [currentGame, setCurrentGame] = useState('menu') // 'menu', 'shoot', 'distance'
 
   // Load scenarios on mount
   useEffect(() => {
@@ -107,11 +109,40 @@ function App() {
     return <div className="app"><h1>Loading scenarios...</h1></div>
   }
 
+  if (currentGame === 'distance') {
+    return <DistanceGame onBack={() => setCurrentGame('menu')} />
+  }
+
+  if (currentGame === 'menu') {
+    return (
+      <div className="app">
+        <div className="menu-container">
+          <h1>Training Menu</h1>
+          <div className="menu-buttons">
+            <button 
+              className="btn menu-btn"
+              onClick={() => setCurrentGame('shoot')}
+            >
+              Shoot / No Shoot Training
+            </button>
+            <button 
+              className="btn menu-btn"
+              onClick={() => setCurrentGame('distance')}
+            >
+              Distance Estimation
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   if (scenarios.length === 0) {
     return (
       <div className="app">
         <h1>Shoot No Shoot Training</h1>
         <p>No scenarios found. Please add scenarios to public/scenarios.json</p>
+        <button className="btn" onClick={() => setCurrentGame('menu')}>← Back to Menu</button>
       </div>
     )
   }
@@ -128,6 +159,7 @@ function App() {
             </span>
           )}
           <button className="reset-btn" onClick={resetScore}>Reset</button>
+          <button className="back-btn" onClick={() => setCurrentGame('menu')}>← Back to Menu</button>
         </div>
       </header>
 
