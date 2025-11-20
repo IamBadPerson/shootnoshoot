@@ -30,14 +30,16 @@ function Flashcards({ onBack }) {
 
   const [currentCard, setCurrentCard] = useState(null)
   const [showAnswer, setShowAnswer] = useState(false)
-  const [questionType, setQuestionType] = useState('normanToMeaning') // normanToMeaning, earlyToMeaning, meaningToNorman, meaningToEarly
+  const [questionType, setQuestionType] = useState('normanToMeaning') // normanToMeaning, earlyToMeaning, meaningToNorman, meaningToEarly, mixed
+  const [currentQuestionType, setCurrentQuestionType] = useState('normanToMeaning') // For mixed mode
   const [score, setScore] = useState({ correct: 0, total: 0 })
   const [options, setOptions] = useState([])
   const [selectedAnswer, setSelectedAnswer] = useState(null)
   const [studyMode, setStudyMode] = useState(false)
 
-  const getAnswerText = (card) => {
-    switch(questionType) {
+  const getAnswerText = (card, qType = null) => {
+    const type = qType || currentQuestionType
+    switch(type) {
       case 'normanToMeaning':
       case 'earlyToMeaning':
         return card.meaning
@@ -55,6 +57,15 @@ function Flashcards({ onBack }) {
   }, [questionType])
 
   const loadRandomCard = () => {
+    // If mixed mode, randomly select a question type for this card
+    if (questionType === 'mixed') {
+      const types = ['normanToMeaning', 'earlyToMeaning', 'meaningToNorman', 'meaningToEarly']
+      const randomType = types[Math.floor(Math.random() * types.length)]
+      setCurrentQuestionType(randomType)
+    } else {
+      setCurrentQuestionType(questionType)
+    }
+    
     const randomIndex = Math.floor(Math.random() * cards.length)
     const card = cards[randomIndex]
     setCurrentCard(card)
@@ -109,7 +120,7 @@ function Flashcards({ onBack }) {
   const getQuestion = () => {
     if (!currentCard) return ''
     
-    switch(questionType) {
+    switch(currentQuestionType) {
       case 'normanToMeaning':
         return currentCard.normanFrench
       case 'earlyToMeaning':
@@ -124,7 +135,7 @@ function Flashcards({ onBack }) {
   }
 
   const getQuestionLabel = () => {
-    switch(questionType) {
+    switch(currentQuestionType) {
       case 'normanToMeaning':
         return 'Norman French Command'
       case 'earlyToMeaning':
@@ -139,7 +150,7 @@ function Flashcards({ onBack }) {
   }
 
   const getAnswerLabel = () => {
-    switch(questionType) {
+    switch(currentQuestionType) {
       case 'normanToMeaning':
       case 'earlyToMeaning':
         return 'What does this mean?'
@@ -173,6 +184,7 @@ function Flashcards({ onBack }) {
             <option value="earlyToMeaning">Early English → Meaning</option>
             <option value="meaningToNorman">Meaning → Norman French</option>
             <option value="meaningToEarly">Meaning → Early English</option>
+            <option value="mixed">🔀 Mixed Mode (All Types)</option>
           </select>
           <label className="study-mode-toggle">
             <input 
