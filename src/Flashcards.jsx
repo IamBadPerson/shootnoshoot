@@ -36,6 +36,20 @@ function Flashcards({ onBack }) {
   const [selectedAnswer, setSelectedAnswer] = useState(null)
   const [studyMode, setStudyMode] = useState(false)
 
+  const getAnswerText = (card) => {
+    switch(questionType) {
+      case 'normanToMeaning':
+      case 'earlyToMeaning':
+        return card.meaning
+      case 'meaningToNorman':
+        return card.normanFrench
+      case 'meaningToEarly':
+        return card.earlyEnglish
+      default:
+        return ''
+    }
+  }
+
   useEffect(() => {
     loadRandomCard()
   }, [questionType])
@@ -53,10 +67,19 @@ function Flashcards({ onBack }) {
   }
 
   const generateOptions = (correctCard) => {
-    const wrongCards = cards.filter(c => c !== correctCard)
+    const correctAnswer = getAnswerText(correctCard)
+    
+    // Get all cards that have different answers than the correct one
+    const wrongCards = cards.filter(c => {
+      const answerText = getAnswerText(c)
+      return answerText !== correctAnswer
+    })
+    
+    // Shuffle and pick 3 unique wrong answers
     const shuffled = wrongCards.sort(() => Math.random() - 0.5)
     const wrongOptions = shuffled.slice(0, 3)
     
+    // Combine and shuffle all options
     const allOptions = [correctCard, ...wrongOptions].sort(() => Math.random() - 0.5)
     setOptions(allOptions)
   }
@@ -95,20 +118,6 @@ function Flashcards({ onBack }) {
         return currentCard.meaning
       case 'meaningToEarly':
         return currentCard.meaning
-      default:
-        return ''
-    }
-  }
-
-  const getAnswerText = (card) => {
-    switch(questionType) {
-      case 'normanToMeaning':
-      case 'earlyToMeaning':
-        return card.meaning
-      case 'meaningToNorman':
-        return card.normanFrench
-      case 'meaningToEarly':
-        return card.earlyEnglish
       default:
         return ''
     }
