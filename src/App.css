@@ -338,11 +338,18 @@ header h1 {
 }
 
 .menu-buttons {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: 1.5rem;
   width: 100%;
-  max-width: 500px;
+  max-width: 800px;
+}
+
+@media (max-width: 768px) {
+  .menu-buttons {
+    grid-template-columns: 1fr;
+    max-width: 500px;
+  }
 }
 
 .menu-btn {

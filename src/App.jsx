@@ -3,6 +3,9 @@ import './App.css'
 import DistanceGame from './DistanceGame'
 import Flashcards from './Flashcards'
 import Leaderboard from './Leaderboard'
+import ReflexGame from './ReflexGame'
+import VocabDrill from './VocabDrill'
+import PacingDrill from './PacingDrill'
 
 function App() {
   const [scenarios, setScenarios] = useState([])
@@ -11,12 +14,13 @@ function App() {
   const [feedback, setFeedback] = useState(null)
   const [showResult, setShowResult] = useState(false)
   const [loading, setLoading] = useState(true)
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+  const [isAuthenticated, setIsAuthenticated] = useState(isLocalhost)
   const [password, setPassword] = useState('')
   const [authError, setAuthError] = useState(false)
   const [nickname, setNickname] = useState(localStorage.getItem('userNickname') || '')
   const [nicknameInput, setNicknameInput] = useState('')
-  const [currentGame, setCurrentGame] = useState('menu') // 'menu', 'shoot', 'distance', 'flashcards', 'leaderboard'
+  const [currentGame, setCurrentGame] = useState('menu') // 'menu', 'shoot', 'distance', 'flashcards', 'leaderboard', 'reflex', 'vocab', 'pacing'
 
   // Save score on tab close
   useEffect(() => {
@@ -198,6 +202,18 @@ function App() {
     return <Flashcards onBack={() => setCurrentGame('menu')} nickname={nickname} />
   }
 
+  if (currentGame === 'reflex') {
+    return <ReflexGame onBack={() => setCurrentGame('menu')} nickname={nickname} />
+  }
+
+  if (currentGame === 'vocab') {
+    return <VocabDrill onBack={() => setCurrentGame('menu')} nickname={nickname} />
+  }
+
+  if (currentGame === 'pacing') {
+    return <PacingDrill onBack={() => setCurrentGame('menu')} nickname={nickname} />
+  }
+
   if (currentGame === 'leaderboard') {
     return <Leaderboard onBack={() => setCurrentGame('menu')} />
   }
@@ -242,6 +258,24 @@ function App() {
               onClick={() => setCurrentGame('flashcards')}
             >
               Authentic Orders Flashcards
+            </button>
+            <button 
+              className="btn menu-btn"
+              onClick={() => setCurrentGame('reflex')}
+            >
+              Instant Call Reflex Training
+            </button>
+            <button 
+              className="btn menu-btn"
+              onClick={() => setCurrentGame('vocab')}
+            >
+              Command Vocabulary Drill
+            </button>
+            <button 
+              className="btn menu-btn"
+              onClick={() => setCurrentGame('pacing')}
+            >
+              Shot Pacing Trainer
             </button>
             <button 
               className="btn menu-btn"

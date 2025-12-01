@@ -1,10 +1,10 @@
 # Copilot Instructions — ShootNoShoot
 
-A React + Vite medieval reenactment training application with three interactive game modes and leaderboard tracking, deployed to GitHub Pages.
+A React + Vite medieval reenactment training application with multiple interactive training modes for archery safety, command vocabulary, reflex training, and pacing practice. Deployed to GitHub Pages.
 
 ## Project Overview
 
-This is a Vite-powered React app configured for automatic deployment to GitHub Pages. The application provides training tools for historical reenactment archery safety, distance estimation, and authentic military commands. Features password protection, nickname-based user tracking, and localStorage-based leaderboards.
+This is a Vite-powered React app configured for automatic deployment to GitHub Pages. The application provides comprehensive training tools for historical reenactment archery including safety scenarios, distance estimation, authentic military commands, reflex drills, command vocabulary practice with speech recognition, and shot pacing training. Features password protection (skipped on localhost), nickname-based user tracking, and localStorage-based leaderboards.
 
 ## Key Files & Architecture
 
@@ -15,10 +15,13 @@ This is a Vite-powered React app configured for automatic deployment to GitHub P
 - **`.github/workflows/deploy.yml`** — GitHub Actions workflow that builds and deploys on every push to `main`.
 
 **Application Components:**
-- **`src/App.jsx`** — Main application router with password authentication ("Banner"), nickname management, and Shoot/No-Shoot game logic.
+- **`src/App.jsx`** — Main application router with password authentication ("Banner", skipped on localhost), nickname management, and Shoot/No-Shoot game logic.
 - **`src/DistanceGame.jsx`** — Distance estimation training game (5'9" person at 5-30m ranges).
 - **`src/Flashcards.jsx`** — Authentic Orders flashcard system (23 commands in Norman French/Early English with 5 modes).
-- **`src/Leaderboard.jsx`** — Displays top 10 scores for all three games with player nicknames.
+- **`src/ReflexGame.jsx`** — Instant Call Reflex Training with 75 rapid scenarios, keyboard controls, and progressive timing.
+- **`src/VocabDrill.jsx`** — Command Vocabulary Drill with 15 commands, optional timed mode, and speech recognition.
+- **`src/PacingDrill.jsx`** — Shot Pacing Trainer with audio metronome (no scoring, no leaderboard).
+- **`src/Leaderboard.jsx`** — Displays top 10 scores for all scored games with player nicknames.
 
 **Data & Assets:**
 - **`public/scenarios.json`** — 6 shoot/no-shoot scenarios with archery safety context.
@@ -50,17 +53,21 @@ Push to `main` → GitHub Actions builds and deploys automatically. Ensure **Set
 
 ## Application Flow
 
-1. **Password Authentication** — User enters password "Banner" (prompt: "Ragged")
+1. **Password Authentication** — User enters password when prompted, automatically skipped on localhost
 2. **Nickname Entry** — User provides nickname (stored in localStorage, max 20 chars)
-3. **Main Menu** — Four options:
+3. **Main Menu** — Six training modes:
    - Shoot / No Shoot Training
    - Distance Estimation
    - Authentic Orders Flashcards
+   - Instant Call Reflex Training
+   - Command Vocabulary Drill
+   - Shot Pacing Trainer
    - Leaderboards
 4. **Game Sessions** — Scores tracked but NOT saved on reset
 5. **Score Saving** — Scores saved to localStorage leaderboards when:
    - User returns to menu (via back button)
    - Browser tab closes (beforeunload event)
+   - Note: Pacing Trainer does NOT save scores (tool only)
 
 ## Game Details
 
@@ -82,6 +89,30 @@ Push to `main` → GitHub Actions builds and deploys automatically. Ensure **Set
 - Multiple choice (4 options) or Study Mode (reveal all)
 - Ensures unique answer options per question
 
+**Instant Call Reflex Training:**
+- 75 rapid-fire safety scenarios
+- Progressive timer: starts at 30 seconds, decreases by 1 second per correct answer (minimum 3 seconds)
+- Keyboard controls: Left Arrow = HOLD FIRE, Right Arrow = SAFE TO SHOOT
+- Instant feedback with visual indicators
+- Tracks correct/total and percentage
+
+**Command Vocabulary Drill:**
+- 15 command scenarios with correct phrasing vs common mistakes
+- Multiple choice format (1 correct, 3 wrong alternatives)
+- Optional timed mode: starts at 30 seconds, decreases by 0.5 seconds per correct answer (minimum 3 seconds)
+- Speech recognition: speaks answers aloud for hands-free practice (Web Speech API)
+- 20-command session length
+- Toggle between ⏱️ Timed and ∞ Untimed modes
+
+**Shot Pacing Trainer:**
+- Audio metronome for consistent shot pacing practice
+- Adjustable rate: 1-20 shots per minute
+- Preset buttons: 6, 8, 10, 12 shots/min
+- Audio beeps mark each shot (Web Audio API)
+- Visual progress bar for 10-shot sets
+- Session history tracks target vs actual rates
+- No scoring or leaderboard (practice tool only)
+
 ## Data Storage
 
 **localStorage keys:**
@@ -89,6 +120,8 @@ Push to `main` → GitHub Actions builds and deploys automatically. Ensure **Set
 - `leaderboard_shoot` — Shoot/No-Shoot scores (array)
 - `leaderboard_distance` — Distance estimation scores (array)
 - `leaderboard_flashcards` — Flashcard scores (array)
+- `leaderboard_reflex` — Instant Call Reflex scores (array)
+- `leaderboard_vocab` — Command Vocabulary Drill scores (array)
 
 **Score object structure:**
 ```js
@@ -101,7 +134,7 @@ Push to `main` → GitHub Actions builds and deploys automatically. Ensure **Set
 }
 ```
 
-Leaderboards sorted by percentage (descending), then by correct count (descending). Display top 10 per game.
+Leaderboards sorted by percentage (descending), then by correct count (descending). Display top 10 per game. Note: Pacing Trainer has no leaderboard (training tool only).
 
 ## Conventions & Patterns
 
@@ -127,7 +160,7 @@ Edit `public/scenarios.json` with new entries containing `id`, `image`, `shouldS
 Edit `<title>` in `index.html`.
 
 **Changing password:**
-Update the string comparison in `handleLogin` function in `App.jsx` (currently `password === 'Banner'`).
+Update the string comparison in `handleLogin` function in `App.jsx`.
 
 ## Deployment Checklist
 

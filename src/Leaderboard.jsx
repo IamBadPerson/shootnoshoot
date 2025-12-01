@@ -10,6 +10,8 @@ function Leaderboard({ onBack }) {
   const [shootScores] = useState(getLeaderboard('shoot'))
   const [distanceScores] = useState(getLeaderboard('distance'))
   const [flashcardScores] = useState(getLeaderboard('flashcards'))
+  const [reflexScores] = useState(getLeaderboard('reflex'))
+  const [vocabScores] = useState(getLeaderboard('vocab'))
 
   const clearLeaderboard = (gameType) => {
     if (confirm(`Clear all ${gameType} scores?`)) {
@@ -80,6 +82,16 @@ function Leaderboard({ onBack }) {
           scores={flashcardScores} 
           gameType="flashcards"
           title="Flashcards"
+        />
+        <ScoreTable 
+          scores={reflexScores} 
+          gameType="reflex"
+          title="Instant Call Reflex"
+        />
+        <ScoreTable 
+          scores={vocabScores} 
+          gameType="vocab"
+          title="Command Vocabulary"
         />
       </div>
     </div>
